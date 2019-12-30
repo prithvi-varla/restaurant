@@ -3,7 +3,7 @@ dist: xenial
 install: true
 
 jdk:
-  - oraclejdk8
+  - openjdk8
 
 services:
   - docker
