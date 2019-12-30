@@ -2,9 +2,9 @@ FROM openjdk:8-jdk-alpine
 
 ADD /build/libs/restaurant-*.jar /
 
-RUN mkdir /opt
+RUN mkdir /application
 
-RUN mv ./restaurant-*.jar /opt/app.jar
+RUN mv ./restaurant-*.jar /application/app.jar
 
 # Expose ports.
 EXPOSE 9091
@@ -13,4 +13,4 @@ ENTRYPOINT exec java \
 	-Dfile.encoding=UTF-8 \
 	-Djava.awt.headless=true \
 	-Djava.security.egd=file:/dev/./urandom \
-	-jar /opt/app.jar
+	-jar /application/app.jar
