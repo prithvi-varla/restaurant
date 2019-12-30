@@ -1,0 +1,21 @@
+language: java
+install: true
+
+jdk:
+  - oraclejdk8
+
+services:
+  - docker
+
+script:
+  - ./gradlew --refresh-dependencies clean build
+  - docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_PSW
+  - docker build -t hub.docker.com/prithvi425/restaurant .
+  - docker tag hub.docker.com/prithvi425/restaurant:latest prithvi425/restaurant:latest
+  - docker push prithvi425/restaurant:latest
+
+deploy:
+  provider: script
+  script: bash deploy.sh
+  on:
+    branch: develop
