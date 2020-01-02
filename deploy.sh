@@ -12,4 +12,4 @@ sudo chmod +x /usr/bin/ecs-deploy
 # Use this for AWS ECR
 # eval $(aws ecr get-login --region us-west-2)
 
-# ecs-deploy -c secondCluster -n s3integration-service -i prithvi425/s3integration:latest
+ecs-deploy -c FirstCluster -n FirstService -i prithvi425/restaurant:latest
