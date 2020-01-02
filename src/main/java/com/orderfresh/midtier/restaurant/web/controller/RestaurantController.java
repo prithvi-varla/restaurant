@@ -48,6 +48,24 @@ public class RestaurantController {
     @Autowired
     private CompanyService companyService;
 
+
+    @PostMapping(
+            value = {"/v1/admin/test"},
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public Mono<ResponseEntity<AuthResponse>> test(@RequestBody AuthRequest ar) {
+
+        Mono<AuthResponse> result = Mono.just(new AuthResponse());
+
+        return result.map(resp -> new ResponseEntity<>(
+                                  resp,
+                                  HttpStatus.OK
+                          )
+        )
+                     .defaultIfEmpty(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                                   .body(null));
+    }
+
     //@RequestMapping(value = "/v1/admin/login", method = RequestMethod.POST)
     @PostMapping(
             value = {"/v1/admin/login"},
