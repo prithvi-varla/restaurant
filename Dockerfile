@@ -1,10 +1,10 @@
 FROM openjdk:8-jdk-alpine
 
-ADD /build/libs/restaurant-*.jar /
+ADD /build/libs/bonmunch-*.jar /
 
 RUN mkdir /application
 
-RUN mv ./restaurant-*.jar /application/app.jar
+RUN mv ./bonmunch-*.jar /application/app.jar
 
 # Expose ports.
 EXPOSE 9091
