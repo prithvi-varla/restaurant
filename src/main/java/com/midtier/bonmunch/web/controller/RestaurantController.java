@@ -1,6 +1,9 @@
 package com.midtier.bonmunch.web.controller;
 
+import com.midtier.bonmunch.service.CategoryService;
 import com.midtier.bonmunch.service.ProductService;
+import com.midtier.bonmunch.web.model.Category;
+import com.midtier.bonmunch.web.model.CategoryType;
 import com.midtier.bonmunch.web.model.Image;
 import com.midtier.bonmunch.web.model.ImageType;
 import com.midtier.bonmunch.web.model.Product;
@@ -63,6 +66,9 @@ public class RestaurantController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private CategoryService categoryService;
+
     /*
         Get new product from admin page
      */
@@ -87,9 +93,40 @@ public class RestaurantController {
             @AuthenticationPrincipal ApiPrincipal principal
     ){
 
-        return productService.getAllProducts(principal)
+        return productService.getAllProducts(principal.getCompanyId())
                           .map(resp -> new ResponseEntity<>(resp, HttpStatus.OK))
                           .defaultIfEmpty(ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+    }
+
+
+    /*
+        Get all products from company page
+     */
+    @GetMapping(value = "/v1/companies/{companyId}/products")
+    public Mono<ResponseEntity<List<Product>>> getAllProductsForCompany(
+            @Valid @PathVariable UUID companyId
+    ){
+
+        return productService.getAllProducts(companyId)
+                             .map(resp -> new ResponseEntity<>(resp, HttpStatus.OK))
+                             .defaultIfEmpty(ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
+    }
+
+
+    /*
+        Get all category from admin page
+     */
+    @GetMapping(value = "/v1/companies/{companyId}/categories",
+            params =  {"categoryType"})
+    public Mono<ResponseEntity<List<Category>>> getAllCategories(
+            @AuthenticationPrincipal ApiPrincipal principal,
+            @Valid @PathVariable UUID companyId,
+            @Valid @RequestParam(value = "categoryType") CategoryType categoryType
+    ){
+
+        return categoryService.getAllCategoriesWithNameMap(categoryType, companyId)
+                              .map(resp -> new ResponseEntity<>(resp, HttpStatus.OK))
+                              .defaultIfEmpty(ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }
 
     /*
@@ -108,7 +145,28 @@ public class RestaurantController {
             @AuthenticationPrincipal ApiPrincipal apiPrincipal
     ){
 
-        return imageService.getAllGalleryImagesInfo(page, imageType, apiPrincipal)
+        return imageService.getAllGalleryImagesInfo(page, imageType, apiPrincipal.getCompanyId())
+                           .map(resp -> new ResponseEntity<>(resp, HttpStatus.OK))
+                           .defaultIfEmpty(ResponseEntity.status(400).body(null));
+
+    }
+
+    /*
+        Get all images for the restaurant for all pages
+     */
+    @GetMapping(
+            value = "/v1/companies/{id}/images",
+            params = {"page", "imageType"}
+    )
+    public Mono<ResponseEntity<Image>> getAllGalleryImagesForCompany(
+            @RequestHeader HttpHeaders headers,
+            @RequestBody Flux<ByteBuffer> body,
+            @Valid @RequestParam(value = "imageType") ImageType imageType,
+            @Valid @RequestParam(value = "page") int page,
+            @Valid @PathVariable UUID id
+    ){
+
+        return imageService.getAllGalleryImagesInfo(page, imageType, id)
                            .map(resp -> new ResponseEntity<>(resp, HttpStatus.OK))
                            .defaultIfEmpty(ResponseEntity.status(400).body(null));
 
@@ -148,7 +206,6 @@ public class RestaurantController {
         Create new order for the restaurant
      */
     @PostMapping(value = "/v1/companies/orders")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Mono<ResponseEntity<Order>> createOrder(
             @Valid @RequestBody Mono<Order> orderMono,
             @AuthenticationPrincipal ApiPrincipal principal

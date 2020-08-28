@@ -10,6 +10,7 @@ import com.midtier.bonmunch.web.model.Order;
 import com.midtier.bonmunch.web.model.OrderItem;
 import com.midtier.bonmunch.web.model.OrderItemOption;
 import com.midtier.bonmunch.web.model.OrderStatus;
+import com.midtier.bonmunch.web.model.Role;
 import com.midtier.bonmunch.web.model.User;
 import com.midtier.bonmunch.repository.dao.UserRepository;
 import com.midtier.bonmunch.repository.model.OrderDTO;
@@ -43,11 +44,11 @@ public class UserDomainFactory {
                       .companyId(companyId)
                       .firstName(user.getFirstName())
                       .lastName(user.getLastName())
-                      .emailAddress(user.getEmailAddress())
+                      .emailAddress(user.getEmailAddress() == null ? user.getUsername() : user.getEmailAddress())
                       .username(user.getUsername() == null ? user.getEmailAddress() : user.getUsername())
                       .password(isPasswordChanged ? passwordEncoder.encode(user.getPassword()) : user.getPassword() )
                       .level(user.getLevel())
-                      .roles(user.getRoles())
+                      .roles(user.getRoles() == null ? Role.ROLE_CUSTOMER.toString() : user.getRoles())
                       .active(user.getActive() == null ? Boolean.FALSE : user.getActive())
                       .createdDate(LocalDateTime.now())
                       .updatedDate(LocalDateTime.now())

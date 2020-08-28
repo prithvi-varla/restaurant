@@ -49,7 +49,7 @@ public class WebSecurityConfig {
                 //.pathMatchers("/restaurant/v1/restaurants/adminInfo").permitAll()
                 //.pathMatchers("/restaurant/v1/customers/**").permitAll()
                 //.pathMatchers("/restaurant/v1/admin/**").permitAll()
-                .pathMatchers("/bonmunch/v1/companies/login").permitAll()
+                .pathMatchers("/bonmunch/v1/companies/**").permitAll()
                 .anyExchange().authenticated()
                 .and().build();
     }

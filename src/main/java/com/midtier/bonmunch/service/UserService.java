@@ -10,6 +10,7 @@ import com.midtier.bonmunch.security.PBKDF2Encoder;
 import com.midtier.bonmunch.security.model.ApiPrincipal;
 import com.midtier.bonmunch.security.model.AuthRequest;
 import com.midtier.bonmunch.web.model.Order;
+import com.midtier.bonmunch.web.model.Role;
 import com.midtier.bonmunch.web.model.User;
 import com.midtier.bonmunch.exception.DuplicateRecordException;
 import com.midtier.bonmunch.repository.dao.ProductRepository;
@@ -82,21 +83,27 @@ public class UserService {
         Create new user for the company/customer
      */
     private Mono<User> createNewUser(User user, UUID companyId) {
-        UserDTO userDTO = userDomainFactory.getUserDTOBuild(user, false, companyId);
+        UserDTO userDTO = userDomainFactory.getUserDTOBuild(user, true, companyId);
         return Mono.just(userDTO)
                    .flatMap(userRepository::save)
                    .map(userDTOObject -> userDomainFactory.getUserBuild(userDTOObject));
     }
 
 
-    public  Mono<AuthResponse> getUserLoginInfo(AuthRequest authRequest){
+    public  Mono<AuthResponse> getUserLoginInfo(AuthRequest authRequest, boolean customerLogin){
 
        return userRepository.findByEmailAddress(authRequest.getUsername())
-                      .switchIfEmpty(Mono.defer(() -> Mono.empty()))
-                      .filter(userDetails ->
-                                      passwordEncoder.encode(
-                                              authRequest.getPassword()).equals(userDetails.getPassword()))
-                      .map(result -> new AuthResponse(jwtUtil.generateToken(result)));
+              // to filter customer from admin screen; if logged in from customer screen the customerLogin is true
+              .filter(userDetails -> d(customerLogin, userDetails))
+              .filter(userDetails ->
+                              passwordEncoder.encode(
+                                      authRequest.getPassword()).equals(userDetails.getPassword()))
+              .map(result -> new AuthResponse(jwtUtil.generateToken(result)));
+    }
+
+    private boolean d(boolean customerLogin, UserDTO userDetails) {
+        boolean d =  customerLogin ? userDetails.getRoles().equals(Role.ROLE_CUSTOMER) : true;
+        return d;
     }
 
     private Mono<User> getError() {

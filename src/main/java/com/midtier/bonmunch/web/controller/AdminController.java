@@ -283,7 +283,7 @@ public class AdminController {
             @Valid @RequestParam(value = "categoryType") CategoryType categoryType
     ){
 
-        return categoryService.getAllCategoriesWithNameMap(categoryType, principal)
+        return categoryService.getAllCategoriesWithNameMap(categoryType, principal.getCompanyId())
                           .map(resp -> new ResponseEntity<>(resp, HttpStatus.OK))
                           .defaultIfEmpty(ResponseEntity.status(HttpStatus.NOT_FOUND).body(null));
     }

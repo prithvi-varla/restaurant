@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
@@ -88,9 +89,12 @@ public class CompanyController {
             value = {"/v1/companies/login"},
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public Mono<ResponseEntity<AuthResponse>> login(@RequestBody AuthRequest authRequest) {
+    public Mono<ResponseEntity<AuthResponse>> login(
+            @RequestBody AuthRequest authRequest,
+             @Valid @RequestParam(value = "customerLogin", required = false) boolean customerLogin
+    ) {
 
-        return userService.getUserLoginInfo(authRequest)
+        return userService.getUserLoginInfo(authRequest, customerLogin)
                           .map(resp -> new ResponseEntity<>(resp, HttpStatus.OK))
                           .defaultIfEmpty(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
     }

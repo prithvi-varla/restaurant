@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class ImageDomainFactory {
@@ -15,14 +16,14 @@ public class ImageDomainFactory {
     @Value("${image.location.url}")
     private String url;
 
-    public ImageUI getUpdatedImage(com.midtier.bonmunch.model.Image image, ImageType imageType, ApiPrincipal apiPrincipal) {
+    public ImageUI getUpdatedImage(com.midtier.bonmunch.model.Image image, ImageType imageType, UUID companyId) {
 
         return ImageUI
                 .builder()
                 .id(image.getId())
                 .companyId(image.getCompanyId())
                 .name(image.getName())
-                .srcUrl(url+apiPrincipal.getCompanyId()+"/"+imageType.toString()+"/"+image.getId())
+                .srcUrl(url+companyId+"/"+imageType.toString()+"/"+image.getId())
                 .build();
     }
 

@@ -49,10 +49,10 @@ public class ProductService {
 
     }
 
-    public Mono<List<Product>> getAllProducts(ApiPrincipal apiPrincipal) {
+    public Mono<List<Product>> getAllProducts(UUID companyId) {
 
         return
-                productRepository.findByCompanyId(apiPrincipal.getCompanyId())
+                productRepository.findByCompanyId(companyId)
                                   .subscribeOn(Schedulers.elastic())
                                   .publishOn(Schedulers.parallel())
                                   .collectList()

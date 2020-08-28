@@ -75,13 +75,13 @@ public class ImageService {
     private String pageImageSize;
 
 
-    public Mono<Image> getAllGalleryImagesInfo(int pageNumber, ImageType imageType, ApiPrincipal apiPrincipal) {
+    public Mono<Image> getAllGalleryImagesInfo(int pageNumber, ImageType imageType, UUID companyId) {
 
-        return imageRepository.findByImageTypeAndCompanyId(imageType, apiPrincipal.getCompanyId(),
+        return imageRepository.findByImageTypeAndCompanyId(imageType, companyId,
                                                PageRequest.of(pageNumber,Integer.valueOf(pageImageSize)))
                       .subscribeOn(Schedulers.elastic())
                       .publishOn(Schedulers.parallel())
-                      .map( image -> imageDomainFactory.getUpdatedImage(image, imageType, apiPrincipal) )
+                      .map( image -> imageDomainFactory.getUpdatedImage(image, imageType, companyId) )
                       .collectList()
                       .map(imagesList -> imageDomainFactory.getGalleryImages(imagesList) );
 

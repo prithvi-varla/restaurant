@@ -160,6 +160,7 @@ public class ProductDomainFactory {
                             .name(productDTO.getName())
                             .description(productDTO.getDescription())
                             .price(productDTO.getPrice())
+                            .itemOptionSection(getItemOptionSectionBuild(productDTO.getItemOptionSection()))
                             .build())
                     .forEachOrdered(allItems::add);
 

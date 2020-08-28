@@ -52,19 +52,19 @@ public class CategoryService {
     }
 
     // Can be used later to get all orders of an entity
-    public Mono<List<CategoryDTO>> getAllCategoriesDTO(CategoryType categoryType, ApiPrincipal apiPrincipal) {
+    public Mono<List<CategoryDTO>> getAllCategoriesDTO(CategoryType categoryType, UUID companyId) {
 
         Flux<CategoryDTO> categoryDTOFlux;
 
         switch (categoryType) {
             case CATEGORY:
-                categoryDTOFlux = categoryRepository.findByParentCategoryIdNullAndCompanyId(apiPrincipal.getCompanyId());
+                categoryDTOFlux = categoryRepository.findByParentCategoryIdNullAndCompanyId(companyId);
                 break;
             case SUB_CATEGORY:
-                categoryDTOFlux = categoryRepository.findByParentCategoryIdNotNullAndCompanyId(apiPrincipal.getCompanyId());
+                categoryDTOFlux = categoryRepository.findByParentCategoryIdNotNullAndCompanyId(companyId);
                 break;
             default:
-                categoryDTOFlux = categoryRepository.findByCompanyId(apiPrincipal.getCompanyId());
+                categoryDTOFlux = categoryRepository.findByCompanyId(companyId);
         }
         return
             categoryDTOFlux
@@ -81,12 +81,12 @@ public class CategoryService {
                                      t.getCategoryName()));
     }
 
-    public Mono<List<Category>> getAllCategoriesWithNameMap(CategoryType categoryType, ApiPrincipal apiPrincipal) {
+    public Mono<List<Category>> getAllCategoriesWithNameMap(CategoryType categoryType, UUID companyId) {
 
         List<Mono<?>> list = new ArrayList<>();
 
         Mono<List<CategoryDTO>> getAllCategoriesDTOs =
-                getAllCategoriesDTO(categoryType, apiPrincipal);
+                getAllCategoriesDTO(categoryType, companyId);
         list.add(getAllCategoriesDTOs);
 
         // get Map of UUID and Name for top 5 orders
