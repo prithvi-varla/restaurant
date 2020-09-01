@@ -139,7 +139,10 @@ public class ImageService {
                    });
     }
 
-    public Mono<ImageResult> multipartUpload(Flux<Part> parts, ImageType imageType, String imageName, ApiPrincipal apiPrincipal ) {
+    public Mono<ImageResult> multipartUpload(Flux<Part> parts, ImageType imageType,
+                                             String imageName, String imageDescription,
+                                             String buttonName, String buttonUri,
+                                             ApiPrincipal apiPrincipal) {
 
         return parts
                 .ofType(FilePart.class) // We'll ignore other data for now
@@ -150,7 +153,10 @@ public class ImageService {
                                 UUID.fromString(key),
                                 apiPrincipal.getCompanyId(),
                                 imageType,
-                                imageName)))
+                                imageName,
+                                imageDescription,
+                                buttonName,
+                                buttonUri)))
                 .map(result -> result.getId())
                 .publishOn(Schedulers.elastic())
                 .subscribeOn(Schedulers.parallel())

@@ -133,7 +133,7 @@ public class UserDomainFactory {
                        .orderId(newOrderId)
                        .userId(apiPrincipal.getUserId())
                        .companyId(apiPrincipal.getCompanyId())
-                       .orderNumber(order.getOrderNumber())
+                       .orderNumber("12345")
                        .subTotal(order.getSubTotal())
                        .tax(order.getTax())
                        .tip(order.getTip())

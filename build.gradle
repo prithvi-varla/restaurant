@@ -25,6 +25,7 @@ dependencies {
 	implementation ('org.springframework.boot:spring-boot-starter-webflux')
 	implementation ('org.springframework.boot:spring-boot-starter-security')
 	implementation ('org.projectlombok:lombok')
+	compile('org.springframework.boot:spring-boot-starter-actuator')
 
 	implementation('com.amazonaws:aws-java-sdk-core:1.11.700')
 	implementation('com.amazonaws:aws-java-sdk-s3:1.11.700')

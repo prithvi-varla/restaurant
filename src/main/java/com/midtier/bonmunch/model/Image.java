@@ -21,5 +21,11 @@ public class Image {
 
     private ImageType imageType;
 
-    private String name;
+    private String imageName;
+
+    private String imageDescription;
+
+    private String buttonName;
+
+    private String buttonUri;
 }

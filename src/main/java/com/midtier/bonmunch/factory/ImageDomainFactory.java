@@ -22,7 +22,10 @@ public class ImageDomainFactory {
                 .builder()
                 .id(image.getId())
                 .companyId(image.getCompanyId())
-                .name(image.getName())
+                .imageName(image.getImageName())
+                .imageDescription(image.getImageDescription())
+                .buttonName(image.getButtonName())
+                .buttonUri(image.getButtonUri())
                 .srcUrl(url+companyId+"/"+imageType.toString()+"/"+image.getId())
                 .build();
     }

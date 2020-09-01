@@ -44,6 +44,7 @@ public class WebSecurityConfig {
                 .authenticationManager(authenticationManager)
                 .securityContextRepository(securityContextRepository)
                 .authorizeExchange()
+                .pathMatchers("/actuator/**").permitAll()
                 .pathMatchers(HttpMethod.OPTIONS).permitAll()
                 //.pathMatchers("/login").permitAll()
                 //.pathMatchers("/restaurant/v1/restaurants/adminInfo").permitAll()

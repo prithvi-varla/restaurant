@@ -17,7 +17,7 @@ import java.util.UUID;
 @Repository
 public interface  ImageRepository extends ReactiveMongoRepository<Image, UUID> {
 
-    Mono<Image> findByName(String name);
+    Mono<Image> findByImageName(String imageName);
 
     Flux<Image> findByCompanyId(UUID id);
 

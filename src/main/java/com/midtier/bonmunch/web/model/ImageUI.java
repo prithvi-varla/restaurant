@@ -19,7 +19,13 @@ public class ImageUI {
 
     private UUID companyId;
 
-    private String name;
+    private String imageName;
+
+    private String imageDescription;
+
+    private String buttonName;
+
+    private String buttonUri;
 
     private String srcUrl;
 

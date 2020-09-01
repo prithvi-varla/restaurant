@@ -206,6 +206,7 @@ public class RestaurantController {
         Create new order for the restaurant
      */
     @PostMapping(value = "/v1/companies/orders")
+    @PreAuthorize("hasRole('CUSTOMER') or hasRole('ADMIN')")
     public Mono<ResponseEntity<Order>> createOrder(
             @Valid @RequestBody Mono<Order> orderMono,
             @AuthenticationPrincipal ApiPrincipal principal

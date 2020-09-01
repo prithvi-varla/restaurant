@@ -198,11 +198,14 @@ public class AdminController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     Mono<ResponseEntity<ImageResult>> createMultipleGalleryImage(@RequestBody Flux<Part> parts ,
                                                                  @Valid @RequestParam(value = "imageName") String imageName,
+                                                                 @Valid @RequestParam(value = "imageDescription") String imageDescription,
+                                                                 @Valid @RequestParam(value = "buttonName") String buttonName,
+                                                                 @Valid @RequestParam(value = "buttonUri") String buttonUri,
                                                                  @Valid @RequestParam(value = "imageType") ImageType imageType,
                                                                  @AuthenticationPrincipal ApiPrincipal apiPrincipal) {
 
         return
-                imageService.multipartUpload(parts, imageType, imageName, apiPrincipal)
+                imageService.multipartUpload(parts, imageType, imageName, imageDescription, buttonName, buttonUri, apiPrincipal)
                             .map(resp -> new ResponseEntity<>(resp, HttpStatus.OK))
                             .defaultIfEmpty(ResponseEntity.status(400).body(null));
     }

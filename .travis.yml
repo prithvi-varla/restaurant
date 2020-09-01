@@ -4,6 +4,9 @@ install: true
 
 jdk:
   - openjdk8
+before_install:
+- openssl aes-256-cbc -K $encrypted_8fd383601570_key -iv $encrypted_8fd383601570_iv
+   -in application.properties.enc -out ./src/main/resources/application.properties -d
 
 services:
   - docker
