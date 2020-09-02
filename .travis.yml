@@ -18,8 +18,21 @@ script:
   - docker tag hub.docker.com/prithvi425/restaurant:latest prithvi425/restaurant:latest
   - docker push prithvi425/restaurant:latest
 
+# The below comment code is to deploy the code in aws ECS but it has to be on https
+# Problem: FAIL to pass loading page at 'http' was loaded over HTTPS error in browser
+# Refer for solution https://www.youtube.com/watch?v=TsVO14-lqp0
+#deploy:
+#  provider: script
+#  script: bash deploy.sh
+#  on:
+#    branch: develop
+
+# travis deployment
 deploy:
-  provider: script
-  script: bash deploy.sh
+  provider: heroku
+  app: bonmunch-midtier
+  api_key:
+    secure: KcIfm/hqQ5nXW7TTqgtEfM0MMbXCoEzdOUDlv9JzvB26visxJsqyLVq9I+vMv//XRB4ncCNb7hUgoGsk4Yl+n5O0p2TJ0Ky8/N1xv1JNN2/ErVNKWXVTyZmO6Hjmz7v6Xquj5lyTAg+2Wwe9BzORFCAs1p6E1c113tTjzvxs2J32TV9NmApvvb2DCP4vNJwRmCNPoi/TuoOtATlWO3E3721k9D1gInpyd/Y8pcED7Cl1VUXg9LToLIUUsw0bOgh+4j7cbaF/bPQlWk2T/As/6x3R+dS7+6m22qzMgpUEZTnfwSWKVnMCxHuYNfyl4fgHYl9F1+fBunTriersHeilnnOi78jw8UcrcSzhSLmz7lY23Ayef+GY4q53YnvQop3WpLSqWD3wUJVtjpF56688XM8MxlvcTOtD60Z06aayGn4ZUe0HflVAsGJ5p02tb8bngxmJ39b51C2S2h5HYqAN8o4GOboywiOc1LlV6WbyjL1izzTGjUkh+vRlWO7/8OqLWD/k5D8+Uy5DpPFIME0OGMcni8UNzJSFPoCIeNJ29O0KN9VBYEX1G6FFCAfGAxek9J2o9DF+qfKAZ3B2WgrF5H8PFwMvPzyC/HatfjjSt2S0bJSenXXRhpmXd+hK/pKBGTAOVgvK9FI7NqQObfpSwwA+n7k8Cc8amqlgPQhB1PI=
   on:
-    branch: develop
+    repo: prithvi-varla/restaurant
+  skip_cleanup: true # This will skip removing the build at the end (but it is ok to remove this as we are not doing any build in travis, doing it in Heroku)
