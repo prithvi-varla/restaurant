@@ -10,6 +10,6 @@ curl https://raw.githubusercontent.com/silinternational/ecs-deploy/master/ecs-de
 sudo chmod +x /usr/bin/ecs-deploy
 
 # Use this for AWS ECR
-# eval $(aws ecr get-login --region us-east-1)
+# eval $(aws ecr get-login --region us-west-2)
 
-ecs-deploy -c bonmunch-cluster -n bonmunch-service -i prithvi425/restaurant:latest
+ecs-deploy -c FirstCluster -n FirstService -i prithvi425/restaurant:latest
