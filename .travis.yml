@@ -7,6 +7,11 @@ jdk:
 before_install:
 - openssl aes-256-cbc -K $encrypted_8fd383601570_key -iv $encrypted_8fd383601570_iv
    -in ./src/main/resources/application.properties.enc -out ./src/main/resources/application.properties -d
+# install heroku CLI
+- wget -qO- https://toolbelt.heroku.com/install.sh | sh
+   # login to docker registries (dockerhub + heroku)
+- echo "$ $DOCKER_HUB_PSW" | docker login -u "$ $DOCKER_HUB_USER" --password-stdin
+- echo "$ HEROKU_PASSWORD" | docker login -u "$ HEROKU_USERNAME" --password-stdin registry.heroku.com
 
 services:
   - docker
@@ -17,6 +22,8 @@ script:
   - docker build -t hub.docker.com/prithvi425/restaurant .
   - docker tag hub.docker.com/prithvi425/restaurant:latest prithvi425/restaurant:latest
   - docker push prithvi425/restaurant:latest
+  # docker tag for heroku registry
+  - docker tag prithvi425/restaurant registry.heroku.com/$HEROKU_APP_NAME/web
 
 # The below comment code is to deploy the code in aws ECS but it has to be on https
 # Problem: FAIL to pass loading page at 'http' was loaded over HTTPS error in browser
@@ -27,13 +34,24 @@ script:
 #  on:
 #    branch: develop
 
-# travis deployment
+
+# travis deployment to heroku but build and run will happen again
+#deploy:
+#  provider: heroku
+#  app: bonmunch-midtier
+#  api_key:
+#    secure: KcIfm/hqQ5nXW7TTqgtEfM0MMbXCoEzdOUDlv9JzvB26visxJsqyLVq9I+vMv//XRB4ncCNb7hUgoGsk4Yl+n5O0p2TJ0Ky8/N1xv1JNN2/ErVNKWXVTyZmO6Hjmz7v6Xquj5lyTAg+2Wwe9BzORFCAs1p6E1c113tTjzvxs2J32TV9NmApvvb2DCP4vNJwRmCNPoi/TuoOtATlWO3E3721k9D1gInpyd/Y8pcED7Cl1VUXg9LToLIUUsw0bOgh+4j7cbaF/bPQlWk2T/As/6x3R+dS7+6m22qzMgpUEZTnfwSWKVnMCxHuYNfyl4fgHYl9F1+fBunTriersHeilnnOi78jw8UcrcSzhSLmz7lY23Ayef+GY4q53YnvQop3WpLSqWD3wUJVtjpF56688XM8MxlvcTOtD60Z06aayGn4ZUe0HflVAsGJ5p02tb8bngxmJ39b51C2S2h5HYqAN8o4GOboywiOc1LlV6WbyjL1izzTGjUkh+vRlWO7/8OqLWD/k5D8+Uy5DpPFIME0OGMcni8UNzJSFPoCIeNJ29O0KN9VBYEX1G6FFCAfGAxek9J2o9DF+qfKAZ3B2WgrF5H8PFwMvPzyC/HatfjjSt2S0bJSenXXRhpmXd+hK/pKBGTAOVgvK9FI7NqQObfpSwwA+n7k8Cc8amqlgPQhB1PI=
+#  on:
+#    repo: prithvi-varla/restaurant
+#    branch: develop
+#  skip_cleanup: true # This will skip removing the build at the end (but it is ok to remove this as we are not doing any build in travis, doing it in Heroku)
+
+
+
+# travis deployment to heroku through Heroku- registry
 deploy:
-  provider: heroku
-  app: bonmunch-midtier
-  api_key:
-    secure: KcIfm/hqQ5nXW7TTqgtEfM0MMbXCoEzdOUDlv9JzvB26visxJsqyLVq9I+vMv//XRB4ncCNb7hUgoGsk4Yl+n5O0p2TJ0Ky8/N1xv1JNN2/ErVNKWXVTyZmO6Hjmz7v6Xquj5lyTAg+2Wwe9BzORFCAs1p6E1c113tTjzvxs2J32TV9NmApvvb2DCP4vNJwRmCNPoi/TuoOtATlWO3E3721k9D1gInpyd/Y8pcED7Cl1VUXg9LToLIUUsw0bOgh+4j7cbaF/bPQlWk2T/As/6x3R+dS7+6m22qzMgpUEZTnfwSWKVnMCxHuYNfyl4fgHYl9F1+fBunTriersHeilnnOi78jw8UcrcSzhSLmz7lY23Ayef+GY4q53YnvQop3WpLSqWD3wUJVtjpF56688XM8MxlvcTOtD60Z06aayGn4ZUe0HflVAsGJ5p02tb8bngxmJ39b51C2S2h5HYqAN8o4GOboywiOc1LlV6WbyjL1izzTGjUkh+vRlWO7/8OqLWD/k5D8+Uy5DpPFIME0OGMcni8UNzJSFPoCIeNJ29O0KN9VBYEX1G6FFCAfGAxek9J2o9DF+qfKAZ3B2WgrF5H8PFwMvPzyC/HatfjjSt2S0bJSenXXRhpmXd+hK/pKBGTAOVgvK9FI7NqQObfpSwwA+n7k8Cc8amqlgPQhB1PI=
-  on:
-    repo: prithvi-varla/restaurant
+  provider: script
+  script:
+    heroku container: release web --app $ HEROKU_APP_NAME
+   on:
     branch: develop
-  skip_cleanup: true # This will skip removing the build at the end (but it is ok to remove this as we are not doing any build in travis, doing it in Heroku)
