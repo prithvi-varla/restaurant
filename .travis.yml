@@ -52,6 +52,7 @@ script:
 deploy:
   provider: script
   script:
+    docker login --username $DOCKER_HUB_USER --password $DOCKER_HUB_PSW registry.heroku.com;
     docker push registry.heroku.com/$HEROKU_APP_NAME/web;
     heroku container:release web --app $HEROKU_APP_NAME
   on:
